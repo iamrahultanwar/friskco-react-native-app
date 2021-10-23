@@ -1,21 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NativeBaseProvider, Box } from "native-base";
+import LoginPage from "./src/pages/LoginPage";
+import RegisterPage from "./src/pages/RegisterPage";
+import MainPage from "./src/pages/MainPage";
+import SearchView from "./src/views/SearchView";
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={LoginPage}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={RegisterPage}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Main"
+            component={MainPage}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen name="Search" component={SearchView} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
