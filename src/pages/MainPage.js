@@ -4,7 +4,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import HomeView from "../views/HomeView";
 import DownloadsView from "../views/DownloadsView";
-import FollowView from "../views/FollowView";
 import SettingsView from "../views/SettingsView";
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +12,6 @@ export default function MainPage() {
   const icons = {
     home: ["home", "home-outline"],
     downloads: ["cloud-download", "cloud-download-outline"],
-    follows: ["account-group", "account-group-outline"],
     settings: ["cog", "cog-outline"],
   };
 
@@ -33,11 +31,7 @@ export default function MainPage() {
           component={DownloadsView}
           options={{ headerShown: false }}
         />
-        <Tab.Screen
-          name="Follows"
-          component={FollowView}
-          options={{ headerShown: false }}
-        />
+
         <Tab.Screen
           name="Settings"
           component={SettingsView}

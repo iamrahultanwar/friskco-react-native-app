@@ -4,7 +4,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 export default function SearchView() {
   return (
-    <>
+    <Box safeArea>
+      <StatusBar backgroundColor="primary.100" />
       <VStack
         space={5}
         width="100%"
@@ -23,12 +24,6 @@ export default function SearchView() {
             py="3"
             px="1"
             fontSize="14"
-            _web={{
-              _focus: {
-                borderColor: "muted.300",
-                style: { boxShadow: "none" },
-              },
-            }}
             InputLeftElement={
               <Icon
                 m="2"
@@ -50,6 +45,6 @@ export default function SearchView() {
           />
         </VStack>
       </VStack>
-    </>
+    </Box>
   );
 }

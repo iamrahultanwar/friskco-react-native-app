@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, VStack } from "native-base";
+import { Box } from "native-base";
 export default function Layout({ children }) {
   return (
-    <Box p="3">
-      <VStack>{children}</VStack>
+    <Box p="3" height="100%" bg="white">
+      {children}
     </Box>
   );
 }

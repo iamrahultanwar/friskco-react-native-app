@@ -7,6 +7,7 @@ import LoginPage from "./src/pages/LoginPage";
 import RegisterPage from "./src/pages/RegisterPage";
 import MainPage from "./src/pages/MainPage";
 import SearchView from "./src/views/SearchView";
+import DriveDataView from "./src/views/Drive/DriveDataView";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,16 @@ function App() {
             options={{ headerShown: false }}
           />
 
-          <Stack.Screen name="Search" component={SearchView} />
+          <Stack.Screen
+            name="Search"
+            component={SearchView}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="DriveData"
+            component={DriveDataView}
+            options={({ route }) => ({ title: route.params.driveName })}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

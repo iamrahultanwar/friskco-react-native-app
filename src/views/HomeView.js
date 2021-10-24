@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Box,
@@ -10,25 +10,40 @@ import {
   Avatar,
   VStack,
   Spacer,
+  FlatList,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import PageHeader from "../components/PageHeader";
 import Layout from "../components/Layout";
+import { GetUserDrives } from "../services/http";
+import { format } from "date-fns";
+import DriveOptions from "../components/DriveOptions";
+import { useNavigation } from "@react-navigation/core";
 
 export default function HomeView() {
   return (
     <Layout>
-      <PageHeader title="Home" />
       <Basic />
     </Layout>
   );
 }
 
 function Basic() {
-  const data = [];
+  const navigation = useNavigation();
 
-  const [listData, setListData] = useState(data);
+  const [listData, setListData] = useState([]);
+
+  useEffect(() => {
+    const getAllUserDrives = async () => {
+      try {
+        const { data } = await GetUserDrives();
+        setListData(data);
+      } catch {}
+    };
+
+    getAllUserDrives();
+  }, []);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -48,88 +63,56 @@ function Basic() {
     console.log("This row opened", rowKey);
   };
 
-  const renderItem = ({ item, index }) => (
-    <Box>
-      <Pressable onPress={() => console.log("You touched me")} bg="white">
-        <Box pl="4" pr="5" py="2">
-          <HStack alignItems="center" space={3}>
-            <Avatar size="68px" source={{ uri: item.avatarUrl }} />
-            <VStack>
-              <Text color="coolGray.800" _dark={{ color: "warmGray.50" }} bold>
-                {item.fullName}
-              </Text>
-              <Spacer />
-              <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
-                {item.recentText}
-              </Text>
-            </VStack>
-            <Spacer />
-            <Text
-              fontSize="xs"
-              color="coolGray.800"
-              _dark={{ color: "warmGray.50" }}
-              alignSelf="flex-start"
+  const renderItem = ({ item, index }) => {
+    const date = new Date(item.CreatedAt);
+    const formattedDate = format(date, "MMMM do, yyyy");
+    return (
+      <Box key={index}>
+        <Pressable
+          onPress={() =>
+            navigation.push("DriveData", {
+              driveId: item.ID,
+              driveName: item.name,
+            })
+          }
+          bg="white"
+        >
+          <Box py="2">
+            <HStack
+              alignItems="center"
+              justifyContent="space-between"
+              space={2}
             >
-              {item.timeStamp}
-            </Text>
-          </HStack>
-        </Box>
-      </Pressable>
-    </Box>
-  );
-
-  const renderHiddenItem = (data, rowMap) => (
-    <HStack flex="1" pl="2">
-      <Pressable
-        w="70"
-        ml="auto"
-        bg="coolGray.200"
-        justifyContent="center"
-        onPress={() => closeRow(rowMap, data.item.key)}
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <VStack alignItems="center" space={2}>
-          <Icon
-            as={<Entypo name="dots-three-horizontal" />}
-            size="xs"
-            color="coolGray.800"
-          />
-          <Text fontSize="xs" fontWeight="medium" color="coolGray.800">
-            More
-          </Text>
-        </VStack>
-      </Pressable>
-      <Pressable
-        w="70"
-        bg="red.500"
-        justifyContent="center"
-        onPress={() => deleteRow(rowMap, data.item.key)}
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <VStack alignItems="center" space={2}>
-          <Icon as={<MaterialIcons name="delete" />} color="white" size="xs" />
-          <Text color="white" fontSize="xs" fontWeight="medium">
-            Delete
-          </Text>
-        </VStack>
-      </Pressable>
-    </HStack>
-  );
+              <VStack>
+                <Text
+                  color="coolGray.800"
+                  _dark={{ color: "warmGray.50" }}
+                  bold
+                  fontSize={20}
+                >
+                  {item.name}
+                </Text>
+                <Spacer />
+                <Text color="coolGray.600" _dark={{ color: "warmGray.200" }}>
+                  {formattedDate}
+                </Text>
+              </VStack>
+              <Box flex={1} flexDirection="row" justifyContent="flex-end">
+                <DriveOptions />
+              </Box>
+            </HStack>
+          </Box>
+        </Pressable>
+      </Box>
+    );
+  };
 
   return (
-    <Box bg="white" flex="1">
-      <SwipeListView
+    <Box flex="1">
+      <FlatList
+        keyExtractor={(item) => item.ID}
         data={listData}
         renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-130}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={3000}
         onRowDidOpen={onRowDidOpen}
       />
     </Box>

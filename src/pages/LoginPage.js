@@ -71,7 +71,7 @@ export default function LoginPage() {
       try {
         const value = await AsyncStorage.getItem("token");
         if (value !== null) {
-          await GetCurrentUser(value);
+          await GetCurrentUser();
           setIsLoading(false);
           navigation.replace("Main");
         } else {

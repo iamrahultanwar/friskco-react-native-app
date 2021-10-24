@@ -1,4 +1,5 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Http = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -8,7 +9,6 @@ const Http = axios.create({
 Http.interceptors.request.use(async function (config) {
   try {
     const value = await AsyncStorage.getItem("token");
-    console.log("token", value);
     if (value !== null) {
       config.headers.token = `${value}`;
     }
@@ -35,14 +35,18 @@ Http.interceptors.response.use(
     return Promise.reject(error.message);
   }
 );
-export const GetCurrentUser = (token) => {
-  return Http.get("/user/me", {
-    headers: {
-      token,
-    },
-  });
+export const GetCurrentUser = async () => {
+  return Http.get("/user/me");
 };
 
 export const LoginUser = (email, password) => {
   return Http.post("/user/login", { email, password });
+};
+
+export const GetUserDrives = async () => {
+  return Http.get("/drive");
+};
+
+export const GetUserDriveFiles = async (driveId) => {
+  return Http.get("/drive/files/" + driveId);
 };
